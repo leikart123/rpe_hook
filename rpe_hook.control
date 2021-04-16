@@ -1,0 +1,6 @@
+# hello (quotas)
+comment = 'Compares the premissions of the current role with those of the roles in their group. Terminates the connection in case of premissions mismatch'
+default_version = '1.0.0'
+relocatable = true
+
+module_pathname = '/Users/out-presnyakov-gr/Desktop/hooks'  
