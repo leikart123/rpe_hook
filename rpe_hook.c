@@ -74,6 +74,20 @@ roles_is_member_of(Oid roleid)
 }
 
 static bool
+role_exists(Oid roleid)
+{
+	HeapTuple tup;
+
+	tup = SearchSysCache1(AUTHOID, ObjectIdGetDatum(roleid));
+	if(HeapTupleIsValid(tup))
+	{
+		ReleaseSysCache(tup);
+		return(true);
+	}
+	return(false);
+}
+
+static bool
 is_member_of_role_rpe(Oid member, Oid role)
 {
 	/* Fast path for simple case */
@@ -147,9 +161,9 @@ roles_premissions_equality_hook(Port *p, int nmb)
 		
 		foreach(cell, rolelist)
 		{
-			while (search_oid < MAX_SEARCH_OID)
+			while (search_oid < MAX_SEARCH_OID && !rform->rolsuper)
 			{
-				if (!rform->rolsuper && search_oid != user_oid && cell->data.oid_value != user_oid)
+				if (search_oid != user_oid && cell->data.oid_value != user_oid && role_exists(search_oid))
 				{
 					if (is_member_of_role_rpe(search_oid, cell->data.oid_value))
 					{
